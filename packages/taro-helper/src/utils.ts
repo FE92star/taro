@@ -114,9 +114,9 @@ export function printLog (type: processTypeEnum, tag: string, filePath?: string)
     console.log(typeShow.color(typeShow.name), padding, tag, padding, filePath)
   }
 }
-
+// 递归寻找node_modules模块
 export function recursiveFindNodeModules (filePath: string, lastFindPath?: string): string {
-  const findWorkspaceRoot = require('find-yarn-workspace-root')
+  const findWorkspaceRoot = require('find-yarn-workspace-root') // 用于查找yarn workspace根路径
   if (lastFindPath && (normalizePath(filePath) === normalizePath(lastFindPath))) {
     return filePath
   }
@@ -126,7 +126,7 @@ export function recursiveFindNodeModules (filePath: string, lastFindPath?: strin
   if (fs.existsSync(nodeModules)) {
     return nodeModules
   }
-  if (dirname.split(path.sep).length <= 1) {
+  if (dirname.split(path.sep).length <= 1) { // path.sep-路径分隔符/、\
     printLog(processTypeEnum.ERROR, `在${dirname}目录下`, '未找到node_modules文件夹，请先安装相关依赖库！')
     return nodeModules
   }
@@ -484,7 +484,7 @@ export function addPlatforms (platform: string) {
   if (PLATFORMS[upperPlatform]) return
   PLATFORMS[upperPlatform] = platform
 }
-
+// 获取文件的默认导出内容
 export const getModuleDefaultExport = exports => exports.__esModule ? exports.default : exports
 
 export function removeHeadSlash (str: string) {
