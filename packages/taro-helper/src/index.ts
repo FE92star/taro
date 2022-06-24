@@ -16,6 +16,7 @@ export const helper = {
   fs,
   chalk,
   chokidar,
+  // debug是一个运行在nodejs环境下的调试工具，只支持commonjs规范，因此只能通过require动态引入
   createDebug: id => require('debug')(id)
 }
 

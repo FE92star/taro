@@ -1,7 +1,7 @@
 import * as path from 'path'
 import * as fs from 'fs-extra'
 
-import * as merge from 'webpack-merge'
+import * as merge from 'webpack-merge' // 合并webpack config
 import { IProjectConfig } from '@tarojs/taro/types/compile'
 import {
   SOURCE_DIR,
@@ -25,24 +25,27 @@ export default class Config {
   appPath: string
   configPath: string
   initialConfig: IProjectConfig
-  isInitSuccess: boolean
+  isInitSuccess: boolean // 初始化成功的标志位
   constructor (opts: IConfigOptions) {
     this.appPath = opts.appPath
     this.init()
   }
 
   init () {
+    // webpack config配置文件路径——'~/config/index.js'
     this.configPath = resolveScriptPath(path.join(this.appPath, CONFIG_DIR_NAME, DEFAULT_CONFIG_FILE))
     if (!fs.existsSync(this.configPath)) {
       this.initialConfig = {}
       this.isInitSuccess = false
     } else {
+      // require配置文件之前先注册require hook
       createBabelRegister({
         only: [
           filePath => filePath.indexOf(path.join(this.appPath, CONFIG_DIR_NAME)) >= 0
         ]
       })
       try {
+        // 获取初始化配置
         this.initialConfig = getModuleDefaultExport(require(this.configPath))(merge)
         this.isInitSuccess = true
       } catch (err) {

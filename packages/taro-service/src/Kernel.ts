@@ -65,9 +65,9 @@ export default class Kernel extends EventEmitter {
     this.methods = new Map()
     this.commands = new Map()
     this.platforms = new Map()
-    this.initHelper()
-    this.initConfig()
-    this.initPaths()
+    this.initHelper() // 初始化工具函数（作用-helper对象直接挂载到Kernel实例下，方便调用）
+    this.initConfig() // 初始化配置
+    this.initPaths() // 初始化相关文件的路径信息
   }
 
   initConfig () {
@@ -90,6 +90,8 @@ export default class Kernel extends EventEmitter {
         outputPath: path.join(this.appPath, this.initialConfig.outputRoot as string)
       })
     }
+    // JSON.stringify的第三个参数控制字符串的间距
+    // JSON.stringify({a: 1}, null, 2) --> '{\n  "a": 1\n}'
     this.debugger(`initPaths:${JSON.stringify(this.paths, null, 2)}`)
   }
 
@@ -100,6 +102,7 @@ export default class Kernel extends EventEmitter {
 
   initPresetsAndPlugins () {
     const initialConfig = this.initialConfig
+    // 合并插件和初始化配置的presets/plugins
     const allConfigPresets = mergePlugins(this.optsPresets || [], initialConfig.presets || [])()
     const allConfigPlugins = mergePlugins(this.optsPlugins || [], initialConfig.plugins || [])()
     this.debugger('initPresetsAndPlugins', allConfigPresets, allConfigPlugins)
@@ -109,12 +112,14 @@ export default class Kernel extends EventEmitter {
     })
     this.plugins = new Map()
     this.extraPlugins = {}
+    // 加载所有的presets/plugins
     this.resolvePresets(allConfigPresets)
     this.resolvePlugins(allConfigPlugins)
   }
 
   resolvePresets (presets) {
     const allPresets = resolvePresetsOrPlugins(this.appPath, presets, PluginType.Preset)
+    // 初始化所有的presets
     while (allPresets.length) {
       this.initPreset(allPresets.shift()!)
     }
@@ -179,7 +184,7 @@ export default class Kernel extends EventEmitter {
     this.plugins.set(plugin.id, plugin)
   }
 
-  initPluginCtx ({ id, path, ctx }: { id: string, path: string, ctx: Kernel }) {
+  initPluginCtx ({ id, path, ctx }: { id: string, path: string, ctx: Kernel }) { // 初始化插件的上下文
     const pluginCtx = new Plugin({ id, path, ctx })
     const internalMethods = ['onReady', 'onStart']
     const kernelApis = [
@@ -192,6 +197,7 @@ export default class Kernel extends EventEmitter {
       'initialConfig',
       'applyPlugins'
     ]
+    // 注册插件的方法method
     internalMethods.forEach(name => {
       if (!this.methods.has(name)) {
         pluginCtx.registerMethod(name)
@@ -240,7 +246,7 @@ export default class Kernel extends EventEmitter {
     if (!hooks.length) {
       return await initialVal
     }
-    const waterfall = new AsyncSeriesWaterfallHook(['arg'])
+    const waterfall = new AsyncSeriesWaterfallHook(['arg']) // 异步串行函数，上一个监听函数的返回结果作为下一个函数的参数
     if (hooks.length) {
       const resArr: any[] = []
       for (const hook of hooks) {
@@ -289,7 +295,7 @@ export default class Kernel extends EventEmitter {
     printHelpLog(name, optionsMap, command?.synopsisList ? new Set(command?.synopsisList) : new Set())
   }
 
-  async run (args: string | { name: string, opts?: any }) {
+  async run (args: string | { name: string, opts?: any }) { // 执行插件
     let name
     let opts
     if (typeof args === 'string') {
@@ -305,18 +311,18 @@ export default class Kernel extends EventEmitter {
     this.setRunOpts(opts)
 
     this.debugger('initPresetsAndPlugins')
-    this.initPresetsAndPlugins()
+    this.initPresetsAndPlugins() // 初始化presets/plugins
 
-    await this.applyPlugins('onReady')
+    await this.applyPlugins('onReady') // 异步执行插件的onReady方法
 
     this.debugger('command:onStart')
-    await this.applyPlugins('onStart')
+    await this.applyPlugins('onStart') // 异步执行插件的onStart方法
 
     if (!this.commands.has(name)) {
       throw new Error(`${name} 命令不存在`)
     }
 
-    if (opts?.isHelp) {
+    if (opts?.isHelp) { // 注册插件的help信息
       return this.runHelp(name)
     }
 
