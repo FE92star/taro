@@ -26,6 +26,9 @@ import {
 import type { TaroEvent } from './event'
 import type { Attributes } from '../interface'
 
+/**
+ * 实现web标准的element基类
+ */
 @injectable()
 export class TaroElement extends TaroNode {
   public tagName: string

@@ -1,5 +1,11 @@
 import type { TaroElement } from './element'
 
+/**
+ * 模拟web dom的element.classList的API功能
+ * 继承于SetConstructor构造函数，可以合并同名的元素(类名)
+ * const set = new Set()
+ * set.add()/set.delete()/set.has()
+ */
 export class ClassList extends Set<string> {
   private el: TaroElement
 

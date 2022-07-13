@@ -19,10 +19,12 @@ import type { TaroText } from './dom/text'
  * You may have been heard `hydrate` as a SSR-related function,
  * actually, `hydrate` basicly do the `render()` thing, but ignore some properties,
  * it's a vnode traverser and modifier: that's exactly what Taro's doing in here.
+ * 节点数据的转换，
  */
 export function hydrate (node: TaroElement | TaroText): MiniData {
   const nodeName = node.nodeName
 
+  // 处理文本节点，值返回节点名称和文本值
   if (isText(node)) {
     return {
       [Shortcuts.Text]: node.nodeValue,
@@ -40,7 +42,7 @@ export function hydrate (node: TaroElement | TaroText): MiniData {
   if (node.uid !== node.sid) {
     data.uid = node.uid
   }
-
+  // 针对特殊节点的处理，同时没有任何事件绑定，就标记为静态节点
   if (!node.isAnyEventBinded() && SPECIAL_NODES.indexOf(nodeName) > -1) {
     data[Shortcuts.NodeName] = `static-${nodeName}`
     if (nodeName === VIEW && !isHasExtractProp(node)) {
@@ -69,6 +71,7 @@ export function hydrate (node: TaroElement | TaroText): MiniData {
   // 过滤 comment 节点
   childNodes = childNodes.filter(node => !isComment(node))
 
+  // 子节点的处理，如果包含子节点则递归处理节点数据
   if (childNodes.length > 0) {
     data[Shortcuts.Childnodes] = childNodes.map(hydrate)
   } else {
