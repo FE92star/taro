@@ -4,6 +4,9 @@ import { getHooks } from 'src/container/store'
 
 import type { EventHandler, AddEventListenerOptions, IHooks } from '../interface'
 
+/**
+ * 事件目标对象的封装📦
+ */
 @injectable()
 export class TaroEventTarget {
   public __handlers: Record<string, EventHandler[]> = {}

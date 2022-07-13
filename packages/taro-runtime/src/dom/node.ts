@@ -26,6 +26,10 @@ interface RemoveChildOptions {
 const CHILDNODES = Shortcuts.Childnodes
 const nodeId = incrementId()
 
+/**
+ * 实现小程序端符合web标准的节点
+ * web标准中Node节点也是继承于EventTarget父类
+ */
 @injectable()
 export class TaroNode extends TaroEventTarget {
   public uid: string

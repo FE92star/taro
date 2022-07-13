@@ -15,6 +15,9 @@ import {
 import type { TaroElement } from './element'
 import type { EventOptions, MpEvent } from '../interface'
 
+/**
+ * 事件对象
+ */
 // Taro 事件对象。以 Web 标准的事件对象为基础，加入小程序事件对象中携带的部分信息，并模拟实现事件冒泡。
 export class TaroEvent {
   private cacheTarget
