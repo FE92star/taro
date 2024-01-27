@@ -155,7 +155,7 @@ declare namespace MovableViewProps {
 }
 /** 可移动的视图容器，在页面中可以拖拽滑动。movable-view 必须在 movable-area 组件中，并且必须是直接子节点，否则不能移动。
  * @classification viewContainer
- * @supported weapp, alipay, swan, tt, qq, h5, rn
+ * @supported weapp, alipay, swan, tt, qq, h5, rn, harmony_hybrid
  * @example_react
  * ```tsx
  * class App extends Components {
