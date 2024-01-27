@@ -1,5 +1,5 @@
 import { ComponentType } from 'react'
-import { StandardProps, CommonEventFunction, BaseEventOrigFunction } from './common'
+import { BaseEventOrigFunction, CommonEventFunction, StandardProps } from './common'
 interface ScrollViewProps extends StandardProps {
   /** 允许横向滚动
    * @default false
@@ -46,7 +46,7 @@ interface ScrollViewProps extends StandardProps {
    */
   enableBackToTop?: boolean
   /** 启用 flexbox 布局。开启后，当前节点声明了 `display: flex` 就会成为 flex container，并作用于其孩子节点。
-   * @supported weapp
+   * @supported weapp, jd
    * @default false
    */
   enableFlex?: boolean
@@ -81,12 +81,12 @@ interface ScrollViewProps extends StandardProps {
    */
   refresherTriggered?: boolean
   /** 启用 scroll-view 增强特性
-   * @supported weapp
+   * @supported weapp, swan
    * @default false
    */
   enhanced?: boolean
   /** iOS 下 scroll-view 边界弹性控制 (同时开启 enhanced 属性后生效)
-   * @supported weapp
+   * @supported weapp, swan
    * @default true
    */
   bounces?: boolean
@@ -130,14 +130,14 @@ interface ScrollViewProps extends StandardProps {
    * @supported weapp
    * @default false
    */
-  enablePassive?: string
+  enablePassive?: boolean
   /** 渲染模式
    * list - 列表模式。只会渲染在屏节点，会根据直接子节点是否在屏来按需渲染，若只有一个直接子节点则性能会退化
    * custom - 自定义模式。只会渲染在屏节点，子节点可以是 sticky-section list-view grid-view 等组件
    * @supported weapp
    * @default 'list'
    */
-  type: 'list' | 'custom'
+  type?: 'list' | 'custom'
   /** 是否反向滚动。一般初始滚动位置是在顶部，反向滚动则是在底部。
    * @supported weapp
    * @default false
@@ -157,7 +157,7 @@ interface ScrollViewProps extends StandardProps {
    * center - 目标节点显示在视口中间
    * end - 目标节点显示在视口结束处
    * nearest - 目标节点在就近的视口边缘显示，若节点已在视口内则不触发滚动
-   * @supported weapp
+   * @supported weapp, h5
    * @default 'start'
    */
   scrollIntoViewAlignment?: 'start' | 'center' | 'end' | 'nearest'
@@ -176,11 +176,11 @@ interface ScrollViewProps extends StandardProps {
   /** 滚动开始事件
    * @supported weapp
    */
-  onScrollStart?:BaseEventOrigFunction<ScrollViewProps.onScrollDetail>
+  onScrollStart?: BaseEventOrigFunction<ScrollViewProps.onScrollDetail>
   /** 滚动结束事件
    * @supported weapp
    */
-  onScrollEnd?:BaseEventOrigFunction<ScrollViewProps.onScrollDetail>
+  onScrollEnd?: BaseEventOrigFunction<ScrollViewProps.onScrollDetail>
   /** 自定义下拉刷新控件被下拉
    * @supported weapp
    */
@@ -252,6 +252,30 @@ declare namespace ScrollViewProps {
     /** 滚动速度 */
     velocity: number
   }
+  interface RefresherStatusChange {
+    status: RefreshStatus
+    dy: number
+  }
+  const enum RefreshStatus {
+    // 空闲
+    Idle,
+    // 超过下拉刷新阈值，同 bind:refresherwillRefresh 触发时机
+    CanRefresh,
+    // 下拉刷新，同 bind:refresherrefresh 触发时机
+    Refreshing,
+    // 下拉刷新完成，同 bind:refresherrestore 触发时机
+    Completed,
+    // 下拉刷新失败
+    Failed,
+    // 超过下拉二级阈值
+    CanTwoLevel,
+    // 开始打开二级
+    TwoLevelOpening,
+    // 打开二级
+    TwoLeveling,
+    // 开始关闭二级
+    TwoLevelClosing,
+  }
 }
 /** 可滚动视图区域。使用竖向滚动时，需要给scroll-view一个固定高度，通过 WXSS 设置 height。组件属性的长度单位默认为 px
  *
@@ -259,7 +283,7 @@ declare namespace ScrollViewProps {
  * H5 中 ScrollView 组件是通过一个高度（或宽度）固定的容器内部滚动来实现的，因此务必正确的设置容器的高度。例如: 如果 ScrollView 的高度将 body 撑开，就会同时存在两个滚动条（body 下的滚动条，以及 ScrollView 的滚动条）。
  * 微信小程序 中 ScrollView 组件如果设置 scrollX 横向滚动时，并且子元素为多个时（单个子元素时设置固定宽度则可以正常横向滚动），需要通过 WXSS 设置 `white-space: nowrap` 来保证元素不换行，并对 ScrollView 内部元素设置 `display: inline-block` 来使其能够横向滚动。
  * @classification viewContainer
- * @supported weapp, alipay, swan, tt, qq, jd, h5, rn, harmony
+ * @supported weapp, alipay, swan, tt, qq, jd, h5, rn, harmony, harmony_hybrid
  * @example_react
  * ```tsx
  * export default class PageView extends Component {

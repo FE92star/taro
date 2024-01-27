@@ -18,9 +18,9 @@ import { AdCustomProps } from './AdCustom'
 import { AudioProps } from './Audio'
 import { ButtonProps } from './Button'
 import { CameraProps } from './Camera'
+import { CanvasProps } from './Canvas'
 import { ChannelLiveProps } from './ChannelLive'
 import { ChannelVideoProps } from './ChannelVideo'
-import { CanvasProps } from './Canvas'
 import { CheckboxProps } from './Checkbox'
 import { CheckboxGroupProps } from './CheckboxGroup'
 import { StandardProps } from './common'
@@ -30,17 +30,20 @@ import { CustomWrapperProps } from './CustomWrapper'
 import { EditorProps } from './Editor'
 import { FormProps } from './Form'
 import { FunctionalPageNavigatorProps } from './FunctionalPageNavigator'
+import { GridViewProps } from './GridView'
 import { IconProps } from './Icon'
 import { ImageProps } from './Image'
 import { InputProps } from './Input'
 import { KeyboardAccessoryProps } from './KeyboardAccessory'
 import { LabelProps } from './Label'
+import { ListViewProps } from './ListView'
 import { LivePlayerProps } from './LivePlayer'
 import { LivePusherProps } from './LivePusher'
 import { MapProps } from './Map'
 import { MatchMediaProps } from './MatchMedia'
 import { MovableAreaProps } from './MovableArea'
 import { MovableViewProps } from './MovableView'
+import { NativeSlotProps } from './NativeSlot'
 import { NavigationBarProps } from './NavigationBar'
 import { NavigatorProps } from './Navigator'
 import { OfficialAccountProps } from './OfficialAccount'
@@ -52,14 +55,19 @@ import {
   PickerRegionProps, PickerSelectorProps, PickerTimeProps
 } from './Picker'
 import { PickerViewProps } from './PickerView'
+import { PickerViewColumnProps } from './PickerViewColumn'
 import { ProgressProps } from './Progress'
 import { RadioProps } from './Radio'
 import { RadioGroupProps } from './RadioGroup'
 import { RichTextProps } from './RichText'
+import { RootPortalProps } from './RootPortal'
 import { ScrollViewProps } from './ScrollView'
 import { ShareElementProps } from './ShareElement'
 import { SliderProps } from './Slider'
 import { SlotProps } from './Slot'
+import { SnapshotProps } from './SnapShot'
+import { StickyHeaderProps } from './StickyHeader'
+import { StickySectionProps } from './StickySection'
 import { SwiperProps } from './Swiper'
 import { SwiperItemProps } from './SwiperItem'
 import { SwitchProps } from './Switch'
@@ -69,16 +77,18 @@ import { VideoProps } from './Video'
 import { ViewProps } from './View'
 import { VoipRoomProps } from './VoipRoom'
 import { WebViewProps } from './WebView'
-import { RootPortalProps } from './RootPortal'
-import { PickerViewColumnProps } from './PickerViewColumn'
-import { NativeSlotProps } from './NativeSlot'
-import { GridViewProps } from './GridView'
-import { ListViewProps } from './ListView'
-import { StickyHeaderProps } from './StickyHeader'
-import { StickySectionProps } from './StickySection'
+
+/** 因为react的事件是CamelCase而vue得是Camelcase, 所以需要转换 */
+type OnCamelCaseToOnCamelcase<T extends string> = T extends `on${infer Rest}`
+  ? `on${Capitalize<Lowercase<Rest>>}`
+  : T;
+
+type TransformCamelCase<T extends Record<string, any>> = {
+  [key in keyof T as OnCamelCaseToOnCamelcase<key>]: T[key]
+}
 
 /** 联合类型不能用omit（比如picker） */
-type DistributiveOmit<T, K extends keyof T> = T extends unknown ? Omit<T, K> : never
+type DistributiveOmit<T, K extends keyof T> = T extends unknown ? TransformCamelCase<Omit<T, K>> : never
 
 interface SlimProps {
   class?: any
@@ -99,17 +109,12 @@ export * from './props'
 export declare const Block: VueComponentType<StandardProps>
 export declare const CoverImage: VueComponentType<CoverImageProps>
 export declare const CoverView: VueComponentType<CoverViewProps>
-export declare const GridView: VueComponentType<GridViewProps>
-export declare const ListView: VueComponentType<ListViewProps>
 export declare const MatchMedia: VueComponentType<MatchMediaProps>
 export declare const MovableArea: VueComponentType<MovableAreaProps>
 export declare const MovableView: VueComponentType<MovableViewProps>
 export declare const PageContainer: VueComponentType<PageContainerProps>
 export declare const RootPortal: VueComponentType<RootPortalProps>
 export declare const ScrollView: VueComponentType<ScrollViewProps>
-export declare const ShareElement: VueComponentType<ShareElementProps>
-export declare const StickyHeader: VueComponentType<StickyHeaderProps>
-export declare const StickySection: VueComponentType<StickySectionProps>
 export declare const Swiper: VueComponentType<SwiperProps>
 export declare const SwiperItem: VueComponentType<SwiperItemProps>
 export declare const View: VueComponentType<ViewProps>
@@ -135,6 +140,13 @@ export declare const RadioGroup: VueComponentType<RadioGroupProps>
 export declare const Slider: VueComponentType<SliderProps>
 export declare const Switch: VueComponentType<SwitchProps>
 export declare const Textarea: VueComponentType<TextareaProps>
+/** Skyline */
+export declare const GridView: VueComponentType<GridViewProps>
+export declare const ListView: VueComponentType<ListViewProps>
+export declare const Snapshot: VueComponentType<SnapshotProps>
+export declare const ShareElement: VueComponentType<ShareElementProps>
+export declare const StickyHeader: VueComponentType<StickyHeaderProps>
+export declare const StickySection: VueComponentType<StickySectionProps>
 /** 导航 */
 export declare const FunctionalPageNavigator: VueComponentType<FunctionalPageNavigatorProps>
 export declare const Navigator: VueComponentType<NavigatorProps>
@@ -197,8 +209,6 @@ declare global {
       'taro-root-portal-core': ElementAttrs<TransformReact2VueType<RootPortalProps>>
       'scroll-view': ElementAttrs<TransformReact2VueType<ScrollViewProps>>
       'taro-scroll-view-core': ElementAttrs<TransformReact2VueType<ScrollViewProps>>
-      'share-element': ElementAttrs<TransformReact2VueType<ShareElementProps>>
-      'taro-share-element-core': ElementAttrs<TransformReact2VueType<ShareElementProps>>
       swiper: ElementAttrs<TransformReact2VueType<SwiperProps>>
       'taro-swiper-core': ElementAttrs<TransformReact2VueType<SwiperProps>>
       'swiper-item': ElementAttrs<TransformReact2VueType<SwiperItemProps>>
@@ -247,6 +257,19 @@ declare global {
       'taro-switch-core': ElementAttrs<TransformReact2VueType<SwitchProps>>
       textarea: ElementAttrs<TransformReact2VueType<TextareaProps>>
       'taro-textarea-core': ElementAttrs<TransformReact2VueType<TextareaProps>>
+      /** Skyline */
+      'grid-view': ElementAttrs<TransformReact2VueType<GridViewProps>>
+      'taro-grid-view-core': ElementAttrs<TransformReact2VueType<GridViewProps>>
+      'list-view': ElementAttrs<TransformReact2VueType<ListViewProps>>
+      'taro-list-view-core': ElementAttrs<TransformReact2VueType<ListViewProps>>
+      'share-element': ElementAttrs<TransformReact2VueType<ShareElementProps>>
+      'taro-share-element-core': ElementAttrs<TransformReact2VueType<ShareElementProps>>
+      'snapshot': ElementAttrs<TransformReact2VueType<SnapshotProps>>
+      'taro-snapshot-core': ElementAttrs<TransformReact2VueType<SnapshotProps>>
+      'sticky-header': ElementAttrs<TransformReact2VueType<StickyHeaderProps>>
+      'taro-sticky-header-core': ElementAttrs<TransformReact2VueType<StickyHeaderProps>>
+      'sticky-section': ElementAttrs<TransformReact2VueType<StickySectionProps>>
+      'taro-sticky-section-core': ElementAttrs<TransformReact2VueType<StickySectionProps>>
       /** 导航 */
       'functional-page-navigator': ElementAttrs<TransformReact2VueType<FunctionalPageNavigatorProps>>
       'taro-functional-page-navigator-core': ElementAttrs<TransformReact2VueType<FunctionalPageNavigatorProps>>

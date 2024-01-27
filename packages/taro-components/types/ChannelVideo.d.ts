@@ -1,7 +1,7 @@
 import { ComponentType } from 'react'
 import { StandardProps, CommonEventFunction } from './common'
 interface ChannelVideoProps extends StandardProps {
-  /** 视频 feedId
+  /** 仅视频号视频与小程序同主体时生效。若内嵌非同主体视频，请使用 feed-token。
    * @supported weapp
    */
   feedId: string
@@ -29,6 +29,10 @@ interface ChannelVideoProps extends StandardProps {
    * @default false
    */
   autoplay?: boolean
+  /** 仅内嵌小程序非同主体视频号视频时使用，获取方式参考[本指引](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/channels-activity.html#feed-token)。
+   * @supported weapp
+   */
+  feedToken?: string
   /** 视频播放出错时触发
    * @supported weapp
    */
