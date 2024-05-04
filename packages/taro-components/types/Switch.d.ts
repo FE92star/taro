@@ -6,6 +6,11 @@ interface SwitchProps extends StandardProps, FormItemProps {
    * @supported weapp, alipay, swan, tt, qq, jd, h5, rn
    */
   checked?: boolean
+  /** 设置在 React 非受控状态下，当前是否选中
+   * @supported h5, rn, weapp, alipay, swan, tt, qq, jd, h5, rn, harmony_hybrid
+   * @unique
+   */
+  defaultChecked?: boolean
   /** 是否禁用
    * @default false
    * @supported weapp, alipay, swan, tt, qq, h5, rn
@@ -84,7 +89,7 @@ declare namespace SwitchProps {
  *   </view>
  * </template>
  * ```
- * @supported weapp, alipay, swan, tt, qq, jd, h5, rn, harmony
+ * @supported weapp, alipay, swan, tt, qq, jd, h5, rn, harmony, harmony_hybrid
  * @see https://developers.weixin.qq.com/miniprogram/dev/component/switch.html
  */
 declare const Switch: ComponentType<SwitchProps>
